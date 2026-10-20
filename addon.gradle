@@ -1,0 +1,40 @@
+version = '0.1.1-alpha'
+ext.modVersion = version
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-proc:none']
+}
+tasks.named('compileJava', JavaCompile) { options.release = 8 }
+tasks.named('compileTestJava', JavaCompile) { options.release = 8 }
+tasks.named('compileInjectedTagsJava', JavaCompile) { options.release = 8 }
+// Full-pack integration fixtures are included only in an explicit test build.
+if (providers.gradleProperty('forgePowerTests').getOrElse('false').toBoolean()) {
+    sourceSets.main.java.srcDir('src/packTest/java')
+}
+tasks.register('verifyDistribution') {
+    dependsOn(tasks.named('reobfJar'))
+    inputs.file(tasks.named('reobfJar').flatMap { it.archiveFile })
+    inputs.property('testBuild', providers.gradleProperty('forgePowerTests').getOrElse('false'))
+    doLast { task ->
+        new java.util.zip.ZipFile(task.inputs.files.singleFile).withCloseable { zip ->
+            def count = 0
+            zip.entries().each { entry ->
+                if (entry.name.endsWith('.class')) {
+                    count++
+                    def bytes = zip.getInputStream(entry).bytes
+                    def major = ((bytes[6] & 255) << 8) | (bytes[7] & 255)
+                    if (major > 52) throw new GradleException('Non-Java-8 class: ' + entry.name)
+                    if (entry.name.contains('/packtest/') && task.inputs.properties.testBuild != 'true')
+                        throw new GradleException('Test code leaked into runtime JAR')
+                }
+            }
+            if (!zip.getEntry('mixins.plasmaforgepower.late.json')) throw new GradleException('Missing mixin configuration')
+            def nbtEntry = zip.getEntry('dev/plasmaforgepower/core/PowerNbt.class')
+            if (!nbtEntry || !new String(zip.getInputStream(nbtEntry).bytes, java.nio.charset.StandardCharsets.ISO_8859_1).contains('func_74778_a'))
+                throw new GradleException('Expected remapped runtime JAR, not a development JAR')
+            if (count == 0) throw new GradleException('Empty JAR')
+            logger.lifecycle('Verified ' + count + ' Java 8 classes; no game client launched.')
+        }
+    }
+}
+tasks.named('check') { dependsOn(tasks.named('verifyDistribution')) }
