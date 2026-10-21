@@ -7,8 +7,11 @@ import java.util.Objects;
 /** Immutable power budget; the selected tier is a display unit, not an electrical transformer. */
 public final class PowerLimit {
 
-    public static final String[] TIERS = { "UEV", "UIV", "UMV", "UXV", "MAX" };
-    private static final long[] VOLTAGES = { 8388608L, 33554432L, 134217728L, 536870912L, 2147483640L };
+    // Keep existing saved IDs 0..4 stable; append new voltage units.
+    public static final String[] TIERS = { "UEV", "UIV", "UMV", "UXV", "MAX", "ULV", "LV", "MV", "HV", "EV", "IV",
+        "LuV", "ZPM", "UV", "UHV" };
+    private static final long[] VOLTAGES = { 8388608L, 33554432L, 134217728L, 536870912L, 2147483640L, 8L, 32L, 128L,
+        512L, 2048L, 8192L, 32768L, 131072L, 524288L, 2097152L };
     private final long eut;
     private final int tier;
 
@@ -67,8 +70,14 @@ public final class PowerLimit {
     }
 
     public static int displayTier(long voltage) {
-        for (int tier = VOLTAGES.length - 1; tier > 0; tier--) if (voltage >= VOLTAGES[tier]) return tier;
-        return 0;
+        int best = 5;
+        for (int tier = 0; tier < VOLTAGES.length; tier++)
+            if (VOLTAGES[tier] <= voltage && VOLTAGES[tier] > VOLTAGES[best]) best = tier;
+        return best;
+    }
+
+    public static Integer[] displayOrder() {
+        return new Integer[] { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 1, 2, 3, 4 };
     }
 
     public String amps() {

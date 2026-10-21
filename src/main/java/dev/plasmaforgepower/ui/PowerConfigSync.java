@@ -13,7 +13,7 @@ import dev.plasmaforgepower.core.PowerLimit;
 import dev.plasmaforgepower.core.PowerNbt;
 import dev.plasmaforgepower.core.PowerSettings;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.common.tileentities.machines.multi.MTEPlasmaForge;
+import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 
 /**
  * Bounded, server-authoritative edits. Stale edits to the same color are rejected instead of overwriting another
@@ -21,7 +21,7 @@ import gregtech.common.tileentities.machines.multi.MTEPlasmaForge;
  */
 public final class PowerConfigSync extends SyncHandler<PowerConfigSync> {
 
-    private final MTEPlasmaForge forge;
+    private final MTEMultiBlockBase forge;
     private final ForgePowerAccess access;
     private final PowerEditor editor;
     private PowerSettings last;
@@ -29,7 +29,7 @@ public final class PowerConfigSync extends SyncHandler<PowerConfigSync> {
     private long lastVoltage = -1;
     private boolean lastFormed;
 
-    public PowerConfigSync(MTEPlasmaForge forge, PowerEditor editor) {
+    public PowerConfigSync(MTEMultiBlockBase forge, PowerEditor editor) {
         this.forge = forge;
         this.access = (ForgePowerAccess) forge;
         this.editor = editor;

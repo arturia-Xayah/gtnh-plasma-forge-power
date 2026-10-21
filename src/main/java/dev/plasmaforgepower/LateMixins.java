@@ -17,6 +17,14 @@ public final class LateMixins implements ILateMixinLoader {
 
     @Override
     public List<String> getMixins(Set<String> loadedMods) {
-        return Arrays.asList("PlasmaForgeMixin", "RecipePowerGateMixin", "DataOrbMixin");
+        return Arrays.asList(
+            "PlasmaForgeMixin",
+            "RecipePowerGateMixin",
+            "DataOrbMixin",
+            "FusionPowerMixin",
+            "FusionContextMixin",
+            "NormalFusionRecipeMixin",
+            "CompactFusionRecipeMixin",
+            "FusionGuiMixin");
     }
 }

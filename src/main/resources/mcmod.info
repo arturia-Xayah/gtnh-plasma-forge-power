@@ -2,8 +2,8 @@
   {
     "modid": "plasmaforgepower",
     "name": "Plasma Forge Power",
-    "description": "Per-input-color power budgets for the Dimensionally Transcendent Plasma Forge.",
-    "version": "0.1.1-alpha",
+    "description": "Per-input-color power budgets for the Dimensionally Transcendent Plasma Forge and ordinary / compact fusion reactors.",
+    "version": "0.2.0-alpha",
     "mcversion": "1.7.10",
     "authorList": ["GPT-6 (Codex)"],
     "dependencies": ["gregtech", "modularui2", "unimixins"]

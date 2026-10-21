@@ -25,6 +25,28 @@ public class PowerSettingsTest {
     }
 
     @Test
+    public void newFusionVoltageUnitsKeepOldIdsAndSortByVoltage() {
+        long previous = 0;
+        for (int tier : PowerLimit.displayOrder()) {
+            long voltage = PowerLimit.voltage(tier);
+            assertTrue(voltage > previous);
+            assertEquals(tier, PowerLimit.displayTier(voltage));
+            assertEquals(
+                voltage,
+                PowerLimit.parse("1", tier)
+                    .eut());
+            previous = voltage;
+        }
+        assertEquals("UEV", PowerLimit.TIERS[0]);
+        assertEquals("UMV", PowerLimit.TIERS[2]);
+        assertEquals("LuV", PowerLimit.TIERS[11]);
+        assertEquals(
+            32768L,
+            PowerLimit.parse("1", 11)
+                .eut());
+    }
+
+    @Test
     public void automaticSentinelsNormalize() {
         assertTrue(
             PowerLimit.parse("0", 0)
@@ -47,7 +69,7 @@ public class PowerSettingsTest {
                 fail(amps);
             } catch (IllegalArgumentException expected) {}
         }
-        for (int tier : new int[] { -1, 5, 99 }) {
+        for (int tier : new int[] { -1, PowerLimit.TIERS.length, 99 }) {
             try {
                 PowerLimit.parse("0", tier);
                 fail();
@@ -125,7 +147,7 @@ public class PowerSettingsTest {
             settings.get(1)
                 .eut());
         assertEquals(
-            "0.000244140625",
+            "1",
             settings.get(1)
                 .amps());
     }
@@ -137,8 +159,8 @@ public class PowerSettingsTest {
             long supply = 1 + (random.nextLong() & Long.MAX_VALUE) / 1024;
             PowerSettings settings = new PowerSettings();
             long request = 1 + (random.nextLong() & Long.MAX_VALUE) / 256;
-            settings.set(1, PowerLimit.ofEUt(request, i % 5));
-            settings.clamp(supply, PowerLimit.voltage(i % 5));
+            settings.set(1, PowerLimit.ofEUt(request, i % PowerLimit.TIERS.length));
+            settings.clamp(supply, PowerLimit.voltage(i % PowerLimit.TIERS.length));
             assertEquals(
                 Math.min(request, supply),
                 settings.get(1)

@@ -6,7 +6,7 @@
 ./gradlew build
 ```
 
-Tests cover exact voltage constants, automatic sentinels, overflow/invalid input, conservative fractional conversion, independent colors, permanent clamping, incomplete supply, 5,000 randomized budgets, and editing/save acknowledgement behavior.
+18 unit tests cover stable old voltage IDs, the extended voltage units, exact GT mixin selectors, exact voltage constants, automatic sentinels, overflow/invalid input, conservative fractional conversion, independent colors, permanent clamping, incomplete supply, 5,000 randomized budgets, and editing/save acknowledgement behavior.
 
 `verifyDistribution` checks Java 8 bytecode, the mixin configuration and absence of test fixtures. It does not launch Minecraft.
 
@@ -38,6 +38,22 @@ java -Xms1G -Xmx6G -Dplasmaforgepower.tests=true -Djava.awt.headless=true @java9
 ```
 
 Read `forge-power-tests.json`. The fixture uses the actual StructureLib construction and GT structure checks, registered UMV energy hatches, native recipe processing and actual server ticks. It calls Matter Manipulator's own analysis/apply implementation and GT's Data Orb save/load operations.
+
+### Disposable runner (0.2.0)
+
+After building the fixture, preserve its JAR outside `build/libs` before rebuilding production. The runner copies configuration and links pack dependencies into a **new** run directory; it never reuses a source-pack world.
+
+```sh
+python3 tools/run_power_backend.py --suite fusion \
+  --pack /absolute/path/to/GTNH-server \
+  --java /absolute/path/to/java \
+  --fixture /absolute/path/to/preserved-test.jar \
+  --run-dir /absolute/path/to/new-fusion-test-directory
+```
+
+Repeat with `--suite forge` and a different new directory for the original forge regression. The fusion report is `fusion-power-tests.json`; the forge report is `forge-power-tests.json`. The fusion suite builds all ten native ordinary/compact Mk-I–V structures and tests budgets, original candidate order, rejection without consumption, full-vs-auto parallel/overclock behavior, NBT/configuration copying, and real Mk-II low/high/low hot transitions. It uses controlled test recipes, not an exhaustive run of all pack recipes. Both latest suites ran on JDK 25.0.4.1.
+
+The restart/removal probes below cover the original forge baseline. They have not been repeated for the new fusion controllers.
 
 ### Restart
 

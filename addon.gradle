@@ -1,4 +1,4 @@
-version = '0.1.1-alpha'
+version = '0.2.0-alpha'
 ext.modVersion = version
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -29,6 +29,11 @@ tasks.register('verifyDistribution') {
                 }
             }
             if (!zip.getEntry('mixins.plasmaforgepower.late.json')) throw new GradleException('Missing mixin configuration')
+            ['mixin/FusionPowerMixin', 'mixin/FusionContextMixin', 'mixin/NormalFusionRecipeMixin',
+             'mixin/CompactFusionRecipeMixin', 'ui/FusionPowerGui', 'ui/CompactFusionPowerGui'].each { name ->
+                if (!zip.getEntry('dev/plasmaforgepower/' + name + '.class'))
+                    throw new GradleException('Missing fusion runtime class: ' + name)
+            }
             def nbtEntry = zip.getEntry('dev/plasmaforgepower/core/PowerNbt.class')
             if (!nbtEntry || !new String(zip.getInputStream(nbtEntry).bytes, java.nio.charset.StandardCharsets.ISO_8859_1).contains('func_74778_a'))
                 throw new GradleException('Expected remapped runtime JAR, not a development JAR')

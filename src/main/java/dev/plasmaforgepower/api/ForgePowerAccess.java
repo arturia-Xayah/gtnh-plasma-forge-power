@@ -3,7 +3,7 @@ package dev.plasmaforgepower.api;
 import dev.plasmaforgepower.core.PowerSettings;
 import gregtech.api.util.GTRecipe;
 
-/** Added only to the existing DTPF controller; there are no new registered blocks or inventory items. */
+/** Added to the existing forge and fusion controllers; no new blocks or inventory items are registered. */
 public interface ForgePowerAccess {
 
     PowerSettings pfp$getSettings();

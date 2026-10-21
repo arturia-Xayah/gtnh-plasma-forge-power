@@ -22,7 +22,7 @@ pfp.saving=正在保存…
 pfp.saved=配置已保存，下一轮配方生效。
 pfp.clamped=已保存，%s 个输入组已下调至整机上限。
 pfp.stale=配置已被修改，请核对后重新保存。
-pfp.unavailable=无法访问该锻炉，请重新打开界面。
+pfp.unavailable=无法访问该主机，请重新打开界面。
 pfp.save=保存设置
 pfp.color.-1=无色
 pfp.color.0=黑色
@@ -41,3 +41,5 @@ pfp.color.12=淡蓝
 pfp.color.13=品红
 pfp.color.14=橙色
 pfp.color.15=白色
+
+pfp.processing_supply=原生处理功率上限

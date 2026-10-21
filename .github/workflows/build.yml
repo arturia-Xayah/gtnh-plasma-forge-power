@@ -22,6 +22,6 @@ jobs:
         run: ./gradlew build --no-daemon --console=plain
       - uses: actions/upload-artifact@v4
         with:
-          name: plasmaforgepower-0.1.1-alpha-GTNH-2.9.0-RC-2
-          path: build/libs/plasmaforgepower-0.1.1-alpha.jar
+          name: plasmaforgepower-0.2.0-alpha-GTNH-2.9.0-RC-2
+          path: build/libs/plasmaforgepower-0.2.0-alpha.jar
           if-no-files-found: error

@@ -1,19 +1,19 @@
-# Plasma Forge Power
+# Plasma Forge Power · Fusion support
 
 [中文](README.md) · **Minecraft 1.7.10 / GTNH 2.9.0-RC-2**
 
-Implemented by GPT-6 (Codex). Adds a blue-and-white settings panel to the existing **Dimensionally Transcendent Plasma Forge**, with a separate power budget for every input color and unpainted inputs. Energy hatches remain a common supply.
+Implemented by GPT-6 (Codex). Adds a blue-and-white settings panel to the existing **Dimensionally Transcendent Plasma Forge and ordinary / compact fusion controllers**, with a separate power budget for every input color and unpainted inputs. Energy hatches remain a common supply.
 
 <p align="center"><strong>One forge. Separate power budgets for each input color.</strong><br>17 input groups · Native UI · Configuration copying · Supply-aware limits</p>
 
 <p align="center">
-  <a href="https://github.com/arturia-Xayah/gtnh-plasma-forge-power/releases/tag/v0.1.1-alpha-GTNH-2.9.0-RC-2"><img alt="Download" src="https://img.shields.io/badge/Download-0.1.1--alpha-176aab?style=for-the-badge"></a>
+  <a href="https://github.com/arturia-Xayah/gtnh-plasma-forge-power/releases/tag/v0.2.0-alpha-GTNH-2.9.0-RC-2"><img alt="Download" src="https://img.shields.io/badge/Download-0.2.0--alpha-176aab?style=for-the-badge"></a>
   <img alt="GTNH version" src="https://img.shields.io/badge/GTNH-2.9.0--RC--2-536d82?style=for-the-badge">
   <img alt="Minecraft" src="https://img.shields.io/badge/Minecraft-1.7.10-536d82?style=for-the-badge">
   <a href="https://github.com/arturia-Xayah/gtnh-plasma-forge-power/actions/workflows/build.yml"><img alt="Build" src="https://github.com/arturia-Xayah/gtnh-plasma-forge-power/actions/workflows/build.yml/badge.svg"></a>
 </p>
 
-<p align="center"><a href="https://github.com/arturia-Xayah/gtnh-plasma-forge-power/releases/tag/v0.1.1-alpha-GTNH-2.9.0-RC-2">Download JAR</a> · <a href="README.md">中文</a> · <a href="VERIFICATION.md">Verification</a></p>
+<p align="center"><a href="https://github.com/arturia-Xayah/gtnh-plasma-forge-power/releases/tag/v0.2.0-alpha-GTNH-2.9.0-RC-2">Download JAR</a> · <a href="README.md">中文</a> · <a href="VERIFICATION.md">Verification</a></p>
 
 ![Color power settings panel](previews/red-manual.png)
 
@@ -21,10 +21,10 @@ Implemented by GPT-6 (Codex). Adds a blue-and-white settings panel to the existi
 
 ## Usage
 
-1. Install `plasmaforgepower-0.1.1-alpha-GTNH-2.9.0-RC-2.jar` in `mods`. Servers and clients must use the same version.
-2. Open the forge controller and click the blue **P** button on its right.
+1. Install `plasmaforgepower-0.2.0-alpha-GTNH-2.9.0-RC-2.jar` in `mods`. Servers and clients must use the same version.
+2. Open the forge or fusion controller and click the blue **P** button on its right.
 3. Select the paint color of the input bus, fluid hatch or crafting input hatch.
-4. Enter amperage, choose **UEV / UIV / UMV / UXV / MAX**, then save.
+4. Enter amperage, choose **ULV–MAX**, then save.
 
 **0 and -1 mean automatic.** Positive fractional amperage is supported and converted conservatively to whole EU/t. Voltage is a unit for expressing the budget; it does not transform the physical supply voltage. A budget is a ceiling, not a guaranteed consumption rate.
 
@@ -43,7 +43,7 @@ Supply values of at least 1 billion EU/t use scientific notation with three sign
 - Automatic mode preserves native processing rules, including the single-normal-energy-hatch rule. No extra supply capacity is granted.
 - If every group is automatic, the original recipe-search implementation runs unchanged.
 
-Painted groups may use native shared unpainted ingredients. With manual settings, complete unpainted recipes are considered first, then complete painted recipes, then painted recipes requiring shared ingredients. An empty painted hatch cannot bypass a complete unpainted recipe's power limit. Bus input separation is respected.
+For the plasma forge, painted groups may use native shared unpainted ingredients. With manual settings, complete unpainted recipes are considered first, then complete painted recipes, then painted recipes requiring shared ingredients. An empty painted hatch cannot bypass a complete unpainted recipe's power limit. Bus input separation is respected.
 
 All internal recipe inventories of a crafting input hatch use that physical hatch's color.
 
@@ -69,8 +69,15 @@ Run Gradle with JDK 25 and provide a Java 8 toolchain for Minecraft compilation:
 ./gradlew build
 ```
 
-Install `build/libs/plasmaforgepower-0.1.1-alpha.jar`, not the development or sources classifier. Distribution filenames also identify the target GTNH version.
+Install `build/libs/plasmaforgepower-0.2.0-alpha.jar`, not the development or sources classifier. Distribution filenames also identify the target GTNH version.
 
 Full-pack fixtures are opt-in with `-PforgePowerTests=true` and excluded from normal builds. See [TESTING.md](TESTING.md).
 
 LGPL-3.0-or-later. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+
+## Fusion support (0.2.0)
+
+Version 0.2.0 adds ordinary Fusion Mk-I–V and Compact Fusion Mk-I–V, sharing the native **P** configuration panel and ULV–MAX voltage units. Fusion limits use the native processing ceiling; charging rate, energy storage, startup eligibility/tax and hot handoff stay native.
+
+Only power is limited. Native recipe traversal and caching remain in control; there is no order-priority scheduler. Continuous idle ingredients may therefore keep the idle recipe selected until existing input automation changes that. A cap below base recipe EU/t rejects the candidate instead of underclocking it below its base usage. Configuration edits take effect on the next reaction. See [Fusion usage](docs/FUSION.md) and [verification](VERIFICATION.md).

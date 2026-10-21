@@ -42,7 +42,7 @@ public final class PowerNbt {
             // MM's JSON round trip narrows integer tags (e.g. int 1 becomes byte 1). Keep numeric meaning, not width.
             if (!integer(entry, "color") || !integer(entry, "eut") || !integer(entry, "tier")) return null;
             long rawColor = entry.getLong("color"), rawTier = entry.getLong("tier");
-            if (rawColor < -1 || rawColor > 15 || rawTier < 0 || rawTier > 4) return null;
+            if (rawColor < -1 || rawColor > 15 || rawTier < 0 || rawTier >= PowerLimit.TIERS.length) return null;
             int color = (int) rawColor;
             if (seen[color + 1]) return null;
             seen[color + 1] = true;
